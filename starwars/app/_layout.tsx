@@ -10,7 +10,7 @@ export default function RootLayout() {
         headerTitleStyle: { fontWeight: 'bold' },
         tabBarStyle: {
           backgroundColor: colors.background,
-          borderTopWidth: 3,
+          borderTopWidth: 1,
           borderTopColor: colors.text,
         },
         tabBarActiveTintColor: colors.text,
@@ -28,8 +28,24 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="people" options={{ title: 'People' }} />
-      <Tabs.Screen name="favorites" options={{ title: 'Favorites' }} />
+      <Tabs.Screen
+        name="people"
+        options={{
+          title: 'People',
+          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+            <Ionicons name="people-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          title: 'Favorites',
+          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+            <Ionicons name="star-outline" color={color} size={size} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
