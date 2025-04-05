@@ -1,3 +1,6 @@
+import FilmItem from '@/components/FilmItem';
+import ListEmptyComponent from '@/components/ListEmptyComponent';
+
 import { colors } from '@/constants/colors';
 import { Film } from '@/types/interfaces';
 import { useEffect, useState } from 'react';
@@ -65,7 +68,8 @@ const Films = () => {
       <FlatList
         data={films}
         keyExtractor={(item) => item.episode_id.toString()}
-        renderItem={renderItem}
+        // renderItem={renderItem}
+        renderItem={({ item }) => <FilmItem film={item} />}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -74,7 +78,11 @@ const Films = () => {
           />
         }
         ListEmptyComponent={
-          <Text style={{ color: colors.text }}>No films found</Text>
+          // <Text style={{ color: colors.text }}>No films found</Text>
+          <ListEmptyComponent
+            loading={loading}
+            message="No films found"
+          />
         }
       ></FlatList>
     </View>
