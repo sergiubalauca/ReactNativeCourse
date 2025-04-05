@@ -23,6 +23,7 @@ export default function RootLayout() {
         options={{
           title: 'Films',
           tabBarLabel: 'List of Films',
+          headerShown: false, // hide the header for this screen, because we have a custom header in the FilmsLayout
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
             <Ionicons name="film" color={color} size={size} />
           ),

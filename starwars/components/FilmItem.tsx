@@ -1,7 +1,7 @@
 import { colors } from '@/constants/colors';
 import { Film } from '@/types/interfaces';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import Link from 'expo-router/link';
 // Both lines define the same component but use different TypeScript syntax:
 // 1. This defines the props type inline with the parameter:
 // const FilmItem = ({ film }: { film: Film }) => {
@@ -9,12 +9,17 @@ import { StyleSheet, Text, View } from 'react-native';
 // 2. This uses React.FC (Function Component) type with props as generic parameter:
 // React.FC is a type that includes children props and other React component properties
 const FilmItem: React.FC<{ film: Film }> = ({ film }) => {
+  const id = film.url.split('/').filter(Boolean).pop();
+
   return (
-    <View style={styles.filmItem}>
-      <Text style={styles.filmTitle}>{film.title}</Text>
-      <Text style={styles.filmDetails}>Episode: {film.episode_id}</Text>
-      <Text style={styles.filmDetails}>Released: {film.release_date}</Text>
-    </View>
+    <Link href={`/films/${id}`} asChild>
+      {/* I need a generic pressable item to make it work */}
+      <TouchableOpacity style={styles.filmItem}>
+        <Text style={styles.filmTitle}>{film.title}</Text>
+        <Text style={styles.filmDetails}>Episode: {film.episode_id}</Text>
+        <Text style={styles.filmDetails}>Released: {film.release_date}</Text>
+      </TouchableOpacity>
+    </Link>
   );
 };
 export default FilmItem;
