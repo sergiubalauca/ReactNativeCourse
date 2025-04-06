@@ -8,18 +8,37 @@ const People = () => {
   const [people, setPeople] = useState<Array<Person>>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchPeople = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://swapi.dev/api/people/');
+      const response = await fetch(
+        `https://swapi.dev/api/people/?page=${page}`
+      );
       const data = await response.json();
-      setPeople(data.results);
+
+      if (page === 1) {
+        setPeople(data.results);
+      } else {
+        setPeople((prev) => [...prev, ...data.results]);
+      }
+
+      setHasMore(data.next !== null);
+      setPage(page + 1);
     } catch (error) {
       console.error('Error fetching people:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      setPage(page + 1);
+      fetchPeople();
     }
   };
 
@@ -29,6 +48,7 @@ const People = () => {
 
   const onRefresh = () => {
     setRefreshing(true);
+    setPage(1);
     fetchPeople();
   };
 
@@ -48,6 +68,8 @@ const People = () => {
         ListEmptyComponent={
           <ListEmptyComponent loading={loading} message="No people found" />
         }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
       />
     </View>
   );
