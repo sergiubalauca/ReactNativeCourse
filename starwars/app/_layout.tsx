@@ -32,6 +32,7 @@ export default function RootLayout() {
       <Tabs.Screen
         name="people"
         options={{
+          headerShown: false,
           title: 'People',
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
             <Ionicons name="people-outline" color={color} size={size} />

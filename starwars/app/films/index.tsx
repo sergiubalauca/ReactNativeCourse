@@ -31,7 +31,7 @@ const Films = () => {
     try {
       const response = await fetch('https://swapi.dev/api/films/');
       const data = await response.json();
-      console.log('GSB data', data);
+
       setFilms(data.results);
     } catch (error) {
       console.error('Error fetching films:', error);
@@ -45,19 +45,6 @@ const Films = () => {
     fetchFilms();
   }, []); // calling this with empty array means it will only run once
 
-  const renderItem = ({ item }: { item: Film }) => {
-    return (
-      <Text
-        style={{
-          color: colors.text,
-          fontSize: 15,
-        }}
-      >
-        {item.title}
-      </Text>
-    );
-  };
-
   const onRefresh = () => {
     setRefreshing(true);
     fetchFilms();
@@ -68,7 +55,6 @@ const Films = () => {
       <FlatList
         data={films}
         keyExtractor={(item) => item.episode_id.toString()}
-        // renderItem={renderItem}
         renderItem={({ item }) => <FilmItem film={item} />}
         refreshControl={
           <RefreshControl
@@ -78,11 +64,7 @@ const Films = () => {
           />
         }
         ListEmptyComponent={
-          // <Text style={{ color: colors.text }}>No films found</Text>
-          <ListEmptyComponent
-            loading={loading}
-            message="No films found"
-          />
+          <ListEmptyComponent loading={loading} message="No films found" />
         }
       ></FlatList>
     </View>
