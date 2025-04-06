@@ -33,6 +33,7 @@ const FilmDetails = () => {
         setLoading(false);
       }
     };
+
     fetchFilm();
   }, [id]);
 
