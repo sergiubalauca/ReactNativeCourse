@@ -2,10 +2,12 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "moduleResolution": "bundler",
+    "baseUrl": ".", // 👈 Needed for path alias
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ] // or ["src/*"] if you're using a src folder
     }
   },
   "include": [
@@ -13,5 +15,11 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
   ]
 }
