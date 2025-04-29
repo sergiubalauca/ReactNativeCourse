@@ -1,5 +1,5 @@
 import { Person } from '@/types/interfaces';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { colors } from '@/constants/colors';
 import PersonComponent from '@/components/Person';
@@ -13,66 +13,79 @@ const People = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
 
-  const fetchPeople = async () => {
+  const fetchPeople = useCallback(async (pageNum: number, search?: string) => {
+    if (loading) return;
+    
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://swapi.dev/api/people/?page=${page}`
-      );
+      const baseUrl = 'https://swapi.dev/api/people/';
+      const url = search
+        ? `${baseUrl}?search=${search}`
+        : `${baseUrl}?page=${pageNum}`;
+
+      const response = await fetch(url);
       const data = await response.json();
 
-      if (page === 1) {
+      if (search || pageNum === 1) {
         setPeople(data.results);
+        setPage(1);
       } else {
-        setPeople((prev) => [...prev, ...data.results]);
+        setPeople(prev => [...prev, ...data.results]);
       }
 
       setHasMore(data.next !== null);
-      setPage(page + 1);
     } catch (error) {
       console.error('Error fetching people:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [loading]);
 
-  const loadMore = () => {
-    if (!loading && hasMore) {
-      setPage(page + 1);
-      fetchPeople();
-    }
-  };
-
+  // Initial load
   useEffect(() => {
-    fetchPeople();
+    fetchPeople(1);
   }, []);
 
+  // Handle search with debouncing
   useEffect(() => {
-    const fetchPeople = async () => {
-      console.log('searchQuery', searchQuery);
-      try {
-        const response = await fetch(
-          `https://swapi.dev/api/people/?search=${searchQuery}`
-        );
-        const data = await response.json();
-        setPeople(data.results);
-        // console.log('data', data);
-      } catch (error) {
-        console.error('Error fetching people:', error);
-      } finally {
-        setLoading(false);
-        setRefreshing(false);
+    // Clear previous timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    // Set new timeout for debouncing
+    const timeout = setTimeout(() => {
+      if (searchQuery) {
+        fetchPeople(1, searchQuery);
+      } else {
+        fetchPeople(1);
+      }
+    }, 500); // 500ms debounce
+
+    setSearchTimeout(timeout);
+
+    // Cleanup
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
       }
     };
-    fetchPeople();
   }, [searchQuery]);
+
+  const loadMore = () => {
+    if (!loading && hasMore && !searchQuery) {
+      fetchPeople(page + 1);
+      setPage(prev => prev + 1);
+    }
+  };
 
   const onRefresh = () => {
     setRefreshing(true);
     setPage(1);
-    fetchPeople();
+    fetchPeople(1, searchQuery);
   };
 
   return (
@@ -81,8 +94,8 @@ const People = () => {
         options={{
           headerSearchBarOptions: {
             placeholder: 'Search',
-            onChangeText: (text) => {
-              setSearchQuery(text.nativeEvent.text);
+            onChangeText: (event) => {
+              setSearchQuery(event.nativeEvent.text);
             },
           },
         }}
@@ -90,7 +103,7 @@ const People = () => {
       <FlatList
         data={people}
         renderItem={({ item }) => <PersonComponent person={item} />}
-        keyExtractor={(item) => item.name.toString()}
+        keyExtractor={(item) => item.url}
         contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl
