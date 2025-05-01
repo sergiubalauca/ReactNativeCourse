@@ -3,6 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Person } from '@/types/interfaces';
 import { colors } from '@/constants/colors';
+
 const PersonDetails = () => {
   const { id } = useLocalSearchParams();
   const [person, setPerson] = useState<Person | null>(null);
