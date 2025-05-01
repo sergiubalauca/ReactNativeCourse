@@ -1,18 +1,33 @@
 import { Slot } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
+import { Suspense } from 'react';
 
 export default function RootLayout() {
   return (
-    <SQLiteProvider databaseName="reports.db" onInit={migrateDbIfNeeded}>
-      {/* somewhat similar to <router-outlet> in angular */}
-      <Slot />
-    </SQLiteProvider>
+    <Suspense fallback={
+      <View style={styles.activityIndicator}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text style={styles.loadingText}>Loading app...</Text>
+      </View>
+    }>
+      <SQLiteProvider
+        useSuspense
+        databaseName="reports.db"
+        onInit={migrateDbIfNeeded}
+      >
+        {/* somewhat similar to <router-outlet> in angular */}
+        <Slot />
+      </SQLiteProvider>
+    </Suspense>
   );
 }
 
 async function migrateDbIfNeeded(db: SQLiteDatabase) {
+  // Simulate a loading time of two seconds in order to basically simulate the suspense mechanism.
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
   const DATABASE_VERSION = 1;
   let version = await db.getFirstAsync<{ user_version: number }>(
     'PRAGMA user_version'
@@ -49,4 +64,15 @@ async function migrateDbIfNeeded(db: SQLiteDatabase) {
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#0000ff',
+  },
+});
