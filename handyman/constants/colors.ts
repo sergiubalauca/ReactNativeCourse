@@ -6,4 +6,7 @@ export const colors = {
   containerBackground: '#222222',
   primary: '#888888',
   secondary: '#FFE81F',
+  title: '#FFE81F',
+  // dark gray
+  drawerTitle: '#888888',
 };
