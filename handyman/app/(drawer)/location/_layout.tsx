@@ -18,6 +18,15 @@ const Layout = () => {
           },
         }}
       />
+
+      <Stack.Screen
+        name="[id]/new-task"
+        options={{
+          title: 'New Task',
+          headerBackTitle: 'Back',
+          headerTintColor: '#000',
+        }}
+      />
     </Stack>
   );
 };

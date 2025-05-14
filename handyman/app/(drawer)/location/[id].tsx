@@ -55,7 +55,7 @@ const Page = () => {
         data={tasks}
         renderItem={({ item }) => <TaskListItem task={item} />}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text>No tasks found</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>No tasks found</Text>}
       />
       <Link href={`/location/${id}/new-task`} asChild>
         <TouchableOpacity style={styles.fab}>
@@ -87,5 +87,11 @@ const styles = StyleSheet.create({
   fabText: {
     fontSize: 24,
     color: 'white',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: colors.inactive,
   },
 });
