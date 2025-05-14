@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import { Location } from '@/types/interfaces';
 import Logo from '@/assets/images/test.png';
 
-// const DB = SQLite.openDatabaseSync('reports.db');
+const DB = SQLite.openDatabaseSync('reports.db');
 // const LOGO_IMAGE = Image.resolveAssetSource(require('@/assets/images/logo.png'));
 const LOGO_IMAGE = Image.resolveAssetSource(Logo).uri;
 
@@ -58,7 +58,7 @@ const customDrawerContent = (props: DrawerContentComponentProps) => {
                 key={location.id}
                 label={location.name}
                 onPress={() => {
-                  router.push(`/location/${location.id}`);
+                  router.navigate(`/location/${location.id}`);
                   props.navigation.closeDrawer();
                 }}
                 focused={isActive}
@@ -84,7 +84,7 @@ const customDrawerContent = (props: DrawerContentComponentProps) => {
 };
 
 const Layout = () => {
-  // useDrizzleStudio(DB);
+  useDrizzleStudio(DB);
 
   return (
     <GestureHandlerRootView>
@@ -105,6 +105,7 @@ const Layout = () => {
           name="location"
           options={{
             title: 'Location',
+            headerShown: false,
             drawerItemStyle: {
               display: 'none',
             },
