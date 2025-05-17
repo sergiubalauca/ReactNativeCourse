@@ -11,8 +11,8 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useCallback, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
 import { colors } from '@/constants/colors';
+
 const Page = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -35,7 +35,6 @@ const Page = () => {
       'SELECT * FROM tasks WHERE locationId = ?',
       [Number(id)]
     );
-    // const tasks = await DB.getAllAsync<Task>('SELECT * FROM tasks');
 
     console.log('🚀 ~ loadLocationData ~ id:', id);
     console.log('🚀 ~ loadLocationData ~ tasks:', tasks);
@@ -50,12 +49,14 @@ const Page = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Stack.Screen options={{ title: locationName + ' ' + id }} />
+      <Stack.Screen options={{ title: locationName }} />
       <FlatList
         data={tasks}
         renderItem={({ item }) => <TaskListItem task={item} />}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text style={styles.emptyText}>No tasks found</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No tasks found</Text>
+        }
       />
       <Link href={`/location/${id}/new-task`} asChild>
         <TouchableOpacity style={styles.fab}>

@@ -6,11 +6,13 @@ import {
   Switch,
   TouchableOpacity,
   Alert,
+  Image,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Task } from '@/types/interfaces';
+import * as ImagePicker from 'expo-image-picker';
 
 const NewTask = () => {
   const { id: locationId, taskId } = useLocalSearchParams();
@@ -20,7 +22,7 @@ const NewTask = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isUrgent, setIsUrgent] = useState(0);
-  const [imageUri, setImageUri] = useState('');
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   const loadTaskData = async () => {
     if (taskId) {
@@ -43,13 +45,13 @@ const NewTask = () => {
 
     if (taskId) {
       await DB.runAsync(
-        'UPDATE tasks SET title = ?, description = ?, isUrgent = ? WHERE id = ?',
-        [title, description, isUrgent, +taskId]
+        'UPDATE tasks SET title = ?, description = ?, isUrgent = ?, imageUri = ? WHERE id = ?',
+        [title, description, isUrgent, imageUri, +taskId]
       );
     } else {
       const result = await DB.runAsync(
-        'INSERT INTO tasks (title, description, isUrgent, locationId) VALUES (?, ?, ?, ?)',
-        [title, description, isUrgent, +locationId]
+        'INSERT INTO tasks (title, description, isUrgent, locationId, imageUri) VALUES (?, ?, ?, ?, ?)',
+        [title, description, isUrgent, +locationId, imageUri]
       );
 
       newTaskId = result.lastInsertRowId;
@@ -80,6 +82,23 @@ const NewTask = () => {
     }
   }, [taskId]);
 
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri ?? null);
+    }
+  };
+
+  const handleDeleteImage = () => {
+    setImageUri(null);
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -107,6 +126,18 @@ const NewTask = () => {
           onValueChange={(value) => setIsUrgent(value ? 1 : 0)}
         />
       </View>
+
+      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+
+      {imageUri && (
+        <TouchableOpacity style={styles.imageButton} onPress={handleDeleteImage}>
+          <Text style={styles.buttonText}>Delete image</Text>
+        </TouchableOpacity>
+      )}
+
+      <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+        <Text style={styles.buttonText}>Add image</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleSaveTask}>
         <Text style={styles.buttonText}>{taskId ? 'Update' : 'Create'}</Text>
@@ -166,5 +197,19 @@ const styles = StyleSheet.create({
   },
   finishButton: {
     backgroundColor: '#4CAF50',
+  },
+  imageButton: {
+    backgroundColor: '#3498db',
+    padding: 16,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 4,
+    marginBottom: 16,
   },
 });
