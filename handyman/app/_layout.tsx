@@ -1,10 +1,31 @@
-import { Slot } from 'expo-router';
+import { Slot, useRouter } from 'expo-router';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import * as Notifications from 'expo-notifications';
 
 export default function RootLayout() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const { taskId, locationId } =
+          response.notification.request.content.data;
+        console.log('Notification response received:', taskId, locationId);
+
+        if (taskId && locationId) {
+          router.push(`/location/${locationId}/new-task?taskId=${taskId}`);
+        }
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   return (
     <Suspense
       fallback={

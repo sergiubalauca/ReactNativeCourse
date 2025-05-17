@@ -13,6 +13,16 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Task } from '@/types/interfaces';
 import * as ImagePicker from 'expo-image-picker';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 const NewTask = () => {
   const { id: locationId, taskId } = useLocalSearchParams();
@@ -58,7 +68,7 @@ const NewTask = () => {
     }
 
     if (isUrgent) {
-      // notification
+      scheduleNotification(newTaskId ?? 0, title, locationId as string);
     }
     router.back();
   };
@@ -80,7 +90,30 @@ const NewTask = () => {
     if (taskId) {
       loadTaskData();
     }
+
+    Notifications.requestPermissionsAsync();
   }, [taskId]);
+
+  const scheduleNotification = async (
+    taskId: number,
+    title: string,
+    locationId: string
+  ) => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: 'Task is urgent',
+        data: {
+          taskId: taskId,
+          locationId: locationId,
+        },
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 5,
+      },
+    });
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -130,7 +163,10 @@ const NewTask = () => {
       {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
 
       {imageUri && (
-        <TouchableOpacity style={styles.imageButton} onPress={handleDeleteImage}>
+        <TouchableOpacity
+          style={styles.imageButton}
+          onPress={handleDeleteImage}
+        >
           <Text style={styles.buttonText}>Delete image</Text>
         </TouchableOpacity>
       )}
