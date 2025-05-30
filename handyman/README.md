@@ -48,3 +48,14 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+Libs and commands to check out:
+
+<!-- - [Expo SQLite](https://docs.expo.dev/sqlite/introduction/) -->
+- [Zustand](https://zustand-demo.pmnd.rs/)
+- [React Native Gesture Handler](https://docs.expo.dev/guides/react-native-gesture-handler/)
+- [React Native Reanimated](https://docs.expo.dev/guides/react-native-reanimated/)
+- [Sentry](https://docs.expo.dev/sentry/introduction/)
+- [FlashList](https://docs.expo.dev/guides/flash-list/)
+- [TanStack Query](https://docs.expo.dev/guides/tanstack-query/)
