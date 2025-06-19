@@ -65,3 +65,4 @@ Libs and commands to check out:
 - [npx expo prebuild -p ios](https://docs.expo.dev/workflow/prebuild/)
 - [npx expo run:ios](https://docs.expo.dev/workflow/ios-simulator/)
 - [Control + D](opens the developer menu)
+- [npx expo install @shopify/flash-list] ()

@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
+import { COLORS } from '@/utils/colors';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,12 @@ export default function RootLayout() {
             title: 'Galactic Shopping',
             headerShadowVisible: false,
             headerStyle: {
-              backgroundColor: '#123456',
+              // backgroundColor: COLORS.,
+            },
+            headerSearchBarOptions: {
+              placeholder: 'Search products',
+              hideWhenScrolling: false,
+              hideNavigationBar: false,
             },
           }}
         />
