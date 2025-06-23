@@ -8,4 +8,5 @@ export const COLORS = {
   septenary: '#b0b0b0',
   octonary: '#a0a0a0',
   nonary: '#909090',
+  white: '#fff',
 };
