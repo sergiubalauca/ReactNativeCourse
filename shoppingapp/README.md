@@ -64,5 +64,7 @@ Libs and commands to check out:
 - [npx expo prebuild](https://docs.expo.dev/workflow/prebuild/)
 - [npx expo prebuild -p ios](https://docs.expo.dev/workflow/prebuild/)
 - [npx expo run:ios](https://docs.expo.dev/workflow/ios-simulator/)
+- [npm i react-native-shimmer-placeholder](https://www.npmjs.com/package/react-native-shimmer-placeholder)
+- [npx expo install expo-linear-gradient](https://docs.expo.dev/guides/linear-gradient/)
 - [Control + D](opens the developer menu)
 - [npx expo install @shopify/flash-list] ()

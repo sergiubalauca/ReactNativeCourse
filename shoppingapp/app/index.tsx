@@ -14,6 +14,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { COLORS } from '@/utils/colors';
 import { Stack } from 'expo-router';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { ProductShimmerGrid } from '@/components/ProductListShimmer';
 
 export default function Index() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -116,16 +117,21 @@ export default function Index() {
           ))}
         </ScrollView>
       </View>
-      <FlashList
-        estimatedItemSize={200}
-        numColumns={2}
-        data={filteredProducts}
-        renderItem={renderProduct}
-        contentContainerStyle={styles.contentContainer}
-        keyExtractor={(item) => item.id.toString()}
-        onRefresh={refetch}
-        refreshing={isRefetching}
-      />
+
+      {isLoading ? (
+        <ProductShimmerGrid />
+      ) : (
+        <FlashList
+          estimatedItemSize={200}
+          numColumns={2}
+          data={filteredProducts}
+          renderItem={renderProduct}
+          contentContainerStyle={styles.contentContainer}
+          keyExtractor={(item) => item.id.toString()}
+          onRefresh={refetch}
+          refreshing={isRefetching}
+        />
+      )}
     </View>
   );
 }
