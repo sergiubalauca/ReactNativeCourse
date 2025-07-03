@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 import { COLORS } from '@/utils/colors';
+import CartButton from '@/components/CartButton';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,12 +31,13 @@ export default function RootLayout() {
               hideWhenScrolling: false,
               hideNavigationBar: false,
             },
+            headerRight: () => <CartButton />,
           }}
         />
         <Stack.Screen
           name="product/[id]"
           options={{
-            headerShadowVisible: false,
+            title: '',
             headerBackTitle: 'Products',
           }}
         />

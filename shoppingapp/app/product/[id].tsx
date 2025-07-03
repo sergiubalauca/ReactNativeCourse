@@ -13,11 +13,12 @@ import { Image } from 'expo-image';
 import { COLORS } from '@/utils/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import useCartStore from '@/store/cartStore';
 
 const ProductDetails = () => {
   const { id } = useLocalSearchParams();
   const { bottom } = useSafeAreaInsets();
-
+  const { addProduct } = useCartStore();
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', id],
     queryFn: () => getProduct(id as string),
@@ -26,6 +27,12 @@ const ProductDetails = () => {
   if (!product) {
     return <Text>Product not found</Text>;
   }
+
+  const handleAddToCart = () => {
+    if (product) {
+      addProduct(product);
+    }
+  };
 
   return isLoading ? (
     <ProductDetailsShimmer />
@@ -52,7 +59,10 @@ const ProductDetails = () => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={[styles.button, { paddingBottom: bottom }]}>
+      <TouchableOpacity
+        style={[styles.button, { paddingBottom: bottom }]}
+        onPress={handleAddToCart}
+      >
         <Ionicons name="cart-outline" size={24} color={COLORS.white} />
         <Text style={styles.buttonText}>Add to Cart</Text>
       </TouchableOpacity>
